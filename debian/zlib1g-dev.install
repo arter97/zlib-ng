@@ -1,0 +1,4 @@
+usr/include/*.h
+usr/lib/*/libz.a
+usr/lib/*/libz.so
+usr/lib/*/pkgconfig/zlib.pc

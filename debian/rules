@@ -1,0 +1,198 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_GNU_OS)
+DEB_HOST_MULTIARCH  ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+CFLAGS = `dpkg-buildflags --get CFLAGS` `dpkg-buildflags --get CPPFLAGS` -Wall -D_REENTRANT
+LDFLAGS = `dpkg-buildflags --get LDFLAGS`
+
+CONFIGURE_COMMON=--zlib-compat --prefix=/usr
+CONFIGURE_HOST=--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
+
+# binutils doesn't supply the prefixed version normally like GCC does so
+# we can't just unconditionally use DEB_HOST_GNU_TYPE-ar
+ifeq ($(DEB_HOST_GNU_TYPE),$(DEB_BUILD_GNU_TYPE))
+	AR=ar
+else
+	AR=$(DEB_HOST_GNU_TYPE)-ar
+endif
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O3
+endif
+
+ifeq (,$(filter nobiarch,$(DEB_BUILD_PROFILES)))
+
+32-ARCHS=amd64 kfreebsd-amd64
+64-ARCHS=i386 x32
+
+ifneq (,$(filter $(DEB_HOST_ARCH), $(32-ARCHS)))
+EXTRA_INSTALL=install32
+EXTRA_BUILD=build32-stamp
+m32=-m32
+endif
+
+ifneq (,$(filter $(DEB_HOST_ARCH), $(64-ARCHS)))
+EXTRA_INSTALL=install64
+EXTRA_BUILD=build64-stamp
+m64=-m64
+endif
+
+endif # !nobiarch
+
+X32-ARCHS=amd64 i386
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(X32-ARCHS)))
+EXTRA_INSTALL+=installx32
+EXTRA_BUILD+=buildx32-stamp
+mx32=-mx32
+endif
+
+COPYLIST=*.h *.c *.in zlib.map arch tools configure test
+
+configure-stamp: configure
+	dh_testdir
+
+	AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" uname=GNU ./configure $(CONFIGURE_COMMON) $(CONFIGURE_HOST)
+
+	touch $@
+
+configure64-stamp: configure
+	dh_testdir
+
+	mkdir -p debian/64
+	cp -r $(COPYLIST) debian/64
+	cd debian/64 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc $(m64)" \
+	    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	    uname=GNU ./configure $(CONFIGURE_COMMON) --64 --libdir=\$${prefix}/usr/lib64
+	touch $@
+
+configure32-stamp: configure
+	dh_testdir
+
+	mkdir -p debian/32
+	cp -r $(COPYLIST) debian/32
+	cd debian/32 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc $(m32)" \
+	    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	    uname=GNU ./configure $(CONFIGURE_COMMON) --32 --libdir=\$${prefix}/usr/lib32
+	touch $@
+
+configurex32-stamp: configure
+	dh_testdir
+
+	mkdir -p debian/x32
+	cp -r $(COPYLIST) debian/x32
+	cd debian/x32 && AR=$(AR) CC="$(DEB_HOST_GNU_TYPE)-gcc $(mx32)" \
+	    CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" \
+	    uname=GNU ./configure $(CONFIGURE_COMMON) --32 --libdir=\$${prefix}/usr/libx32
+	touch $@
+
+build: build-arch build-indep
+build-indep:
+
+build-arch: build-stamp $(EXTRA_BUILD)
+build-stamp: configure-stamp
+	dh_testdir
+
+	$(MAKE)
+
+	-$(MAKE) test
+
+	touch $@
+
+build64-stamp: configure64-stamp
+	dh_testdir
+	make -C debian/64 clean
+	make -C debian/64
+	touch $@
+
+build32-stamp: configure32-stamp
+	dh_testdir
+	make -C debian/32 clean
+	make -C debian/32
+	touch $@
+
+buildx32-stamp: configurex32-stamp
+	dh_testdir
+	make -C debian/x32 clean
+	make -C debian/x32
+	touch $@
+
+clean:
+	dh_testdir
+	dh_testroot
+
+	rm -f build-stamp configure-stamp foo.gz 
+	rm -rf debian/64 build64-stamp configure64-stamp
+	rm -rf debian/32 build32-stamp configure32-stamp
+	rm -rf debian/x32 buildx32-stamp configurex32-stamp
+
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+
+	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr install
+
+install64: install build64-stamp
+	$(MAKE) -C debian/64 prefix=$(CURDIR)/debian/tmp install
+
+install32: install build32-stamp
+	$(MAKE) -C debian/32 prefix=$(CURDIR)/debian/tmp install
+
+installx32: install buildx32-stamp
+	$(MAKE) -C debian/x32 prefix=$(CURDIR)/debian/tmp install
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install $(EXTRA_INSTALL)
+	dh_testdir
+	dh_testroot
+	mkdir -p debian/tmp/usr/bin
+	dh_install -a --sourcedir=debian/tmp
+	dh_lintian -a
+	dh_link -a
+	dh_strip -a --dbgsym-migration="zlib1g-dbg (<< 1:1.2.11.dfsg-2~)"
+	dh_compress -a
+	dh_fixperms -a
+	dh_makeshlibs -pzlib1g -V"zlib1g (>= 1:1.2.3.3.dfsg-1)"
+ifeq (,$(filter nobiarch,$(DEB_BUILD_PROFILES)))
+ifneq (,$(filter $(DEB_HOST_ARCH), $(32-ARCHS)))
+	dh_makeshlibs -plib32z1 -V"lib32z1 (>= 1:1.2.3.3.dfsg-1)"
+endif
+ifneq (,$(filter $(DEB_HOST_ARCH), $(64-ARCHS)))
+	dh_makeshlibs -plib64z1 -V"lib64z1 (>= 1:1.2.3.3.dfsg-1)"
+endif
+ifneq (,$(findstring $(DEB_HOST_ARCH), $(X32-ARCHS)))
+	dh_makeshlibs -plibx32z1 -V"libx32z1 (>= 1:1.2.3.3.dfsg-1)"
+endif
+endif
+	dh_installdeb -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install install64 install32
