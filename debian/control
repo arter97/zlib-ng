@@ -1,0 +1,58 @@
+Source: zlib
+Section: libs
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Mark Brown <broonie@debian.org>
+Standards-Version: 4.6.1
+Homepage: http://zlib.net/
+Build-Depends: dpkg-dev, debhelper, gcc-multilib [amd64 i386 kfreebsd-amd64 mips mipsel powerpc ppc64 s390 sparc s390x mipsn32 mipsn32el mipsr6 mipsr6el mipsn32r6 mipsn32r6el mips64 mips64el mips64r6 mips64r6el x32] <!nobiarch>, dpkg-dev, autoconf
+
+Package: zlib1g
+Architecture: any
+Multi-Arch: same
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Pre-Depends: ${misc:Pre-Depends}
+Priority: required
+Conflicts: zlib1 (<= 1:1.0.4-7)
+Breaks: libxml2 (<< 2.7.6.dfsg-2), texlive-binaries (<< 2023.20230311.66589-8)
+Provides: libz1
+Description: compression library - runtime
+ zlib replacement with optimizations for "next generation" systems.
+ This package includes the shared library.
+
+Package: zlib1g-dev
+Section: libdevel
+Architecture: any
+Multi-Arch: same
+Depends: zlib1g (= ${binary:Version}), libc6-dev | libc-dev, ${misc:Depends}
+Conflicts: zlib1-dev
+Provides: libz-dev
+Description: compression library - development
+ zlib replacement with optimizations for "next generation" systems.
+ This package includes the development support files.
+
+Package: lib64z1
+Architecture: i386 x32
+Build-Profiles: <!nobiarch>
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: amd64-libs (<< 1.4)
+Description: compression library - 64 bit runtime
+ zlib replacement with optimizations for "next generation" systems.
+ This package includes a 64 bit version of the shared library.
+
+Package: lib32z1
+Architecture: amd64 kfreebsd-amd64
+Build-Profiles: <!nobiarch>
+Conflicts: libc6-i386 (<= 2.9-18)
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: ia32-libs (<< 1.5)
+Description: compression library - 32 bit runtime
+ zlib replacement with optimizations for "next generation" systems.
+ This package includes a 32 bit version of the shared library.
+
+Package: libx32z1
+Architecture: amd64 i386
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: compression library - x32 runtime
+ zlib replacement with optimizations for "next generation" systems.
+ This package includes a n32 version of the shared library.
