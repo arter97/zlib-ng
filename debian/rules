@@ -17,8 +17,8 @@ DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_GNU_OS)
 DEB_HOST_MULTIARCH  ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
-CFLAGS = `dpkg-buildflags --get CFLAGS` `dpkg-buildflags --get CPPFLAGS` -Wall -D_REENTRANT
-LDFLAGS = `dpkg-buildflags --get LDFLAGS`
+CFLAGS = -Wall -D_REENTRANT
+LDFLAGS = -Wl,-Bsymbolic-functions -Wl,-z,relro
 
 CONFIGURE_COMMON=--zlib-compat --prefix=/usr
 CONFIGURE_HOST=--libdir=\$${prefix}/lib/$(DEB_HOST_MULTIARCH)
@@ -34,7 +34,8 @@ endif
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
-	CFLAGS += -O3
+	CFLAGS += -O3 -flto
+	LDFLAGS += -flto
 endif
 
 ifeq (,$(filter nobiarch,$(DEB_BUILD_PROFILES)))
