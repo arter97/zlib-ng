@@ -371,7 +371,7 @@ if test "$gcc" -eq 1 && ($cc $CFLAGS -c $test.c) >> configure.log 2>&1; then
     loongarch64)
       ARCH=loongarch64 ;;
   esac
-  CFLAGS="-O2 ${CFLAGS}"
+  CFLAGS="${CFLAGS}"
   if test -n "${ARCHS}"; then
     CFLAGS="${CFLAGS} ${ARCHS}"
     LDFLAGS="${LDFLAGS} ${ARCHS}"
