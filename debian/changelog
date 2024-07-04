@@ -1,3 +1,9 @@
+zlib (1:1.3.0+ng2.2.1-2arter97) UNRELEASED; urgency=medium
+
+  * Fixed runtime instructino-set detection by dropping LTO
+
+ -- Juhyung Park <qkrwngud825@gmail.com>  Fri, 05 Jul 2024 02:29:17 +0900
+
 zlib (1:1.3.0+ng2.2.1-1arter97) UNRELEASED; urgency=medium
 
   * Fixed support for Ubuntu 18.04
