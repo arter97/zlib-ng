@@ -34,8 +34,7 @@ endif
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
 else
-	CFLAGS += -O3 -flto
-	LDFLAGS += -flto
+	CFLAGS += -O3
 endif
 
 ifeq (,$(filter nobiarch,$(DEB_BUILD_PROFILES)))
