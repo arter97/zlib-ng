@@ -1,3 +1,10 @@
+zlib (1:1.3.0+ng2.2.1-1arter97) UNRELEASED; urgency=medium
+
+  * Fixed support for Ubuntu 18.04
+  * Fixed support for armhf
+
+ -- Juhyung Park <qkrwngud825@gmail.com>  Wed, 04 Jul 2024 18:46:17 +0900
+
 zlib (1:1.3.0+ng2.2.1-0arter97) UNRELEASED; urgency=medium
 
   * zlib-ng 2.2.1
