@@ -1,3 +1,9 @@
+zlib (1:1.3.0+ng2.2.2-0arter97) UNRELEASED; urgency=medium
+
+  * zlib-ng 2.2.2
+
+ -- Juhyung Park <qkrwngud825@gmail.com>  Mon, 14 Oct 2024 13:37:17 +0900
+
 zlib (1:1.3.0+ng2.2.1-2arter97) UNRELEASED; urgency=medium
 
   * Fixed runtime instructino-set detection by dropping LTO
