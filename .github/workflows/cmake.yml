@@ -81,11 +81,11 @@ jobs:
             build-src-dir: ../zlib-ng/test/add-subdirectory-project
             readonly-project-dir: true
 
-          - name: Ubuntu GCC -O1 No Unaligned UBSAN
+          - name: Ubuntu GCC -O1 UBSAN
             os: ubuntu-latest
             compiler: gcc
             cxx-compiler: g++
-            cmake-args: -DWITH_UNALIGNED=OFF -DWITH_SANITIZER=Undefined
+            cmake-args: -DWITH_SANITIZER=Undefined
             codecov: ubuntu_gcc_o1
             cflags: -O1
 
@@ -502,7 +502,7 @@ jobs:
           - name: Windows MSVC ARM No Test
             os: windows-latest
             compiler: cl
-            cmake-args: -A ARM
+            cmake-args: -A ARM,version=10.0.22621.0
 
           - name: Windows MSVC ARM64 No Test
             os: windows-latest
@@ -762,7 +762,7 @@ jobs:
         echo "CODECOV_REPORTS=`ls -p *.xml | grep -v / | tr '\n' ',' | sed 's/,$//g'`" >> $GITHUB_ENV
 
     - name: Upload reports
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       if: (env.CODECOV_TOKEN != '' || github.repository == 'zlib-ng/zlib-ng')
       with:
         files: ${{ env.CODECOV_REPORTS }}
