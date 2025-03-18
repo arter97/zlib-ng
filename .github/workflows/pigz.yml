@@ -25,15 +25,15 @@ jobs:
           - name: Ubuntu Clang
             os: ubuntu-latest
             compiler: clang
-            packages: llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_pigz
 
           - name: Ubuntu Clang No Optim
             os: ubuntu-latest
             compiler: clang
-            packages: llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_pigz_no_optim
             cmake-args: -DWITH_OPTIM=OFF
 
@@ -41,15 +41,15 @@ jobs:
           - name: Ubuntu Clang No Threads
             os: ubuntu-latest
             compiler: clang
-            packages: llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_pigz_no_threads
             cmake-args: -DWITH_THREADS=OFF -DPIGZ_VERSION=v2.6
 
           - name: Ubuntu GCC AARCH64
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=../../cmake/toolchain-aarch64.cmake
-            packages: qemu qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu-user gcc-aarch64-linux-gnu libc-dev-arm64-cross
             codecov: ubuntu_gcc_pigz_aarch64
 
     steps:
@@ -105,8 +105,8 @@ jobs:
     - name: Generate coverage report
       if: matrix.codecov
       run: |
-        python3 -u -m pip install --user gcovr==5.0
-        python3 -m gcovr -j 3 --verbose \
+        python3 -u -m pip install gcovr
+        python3 -m gcovr -j 3 --gcov-ignore-parse-errors --verbose \
           --exclude-unreachable-branches \
           --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" \
           --root . \

@@ -38,13 +38,13 @@ jobs:
           - name: Windows MSVC ARM
             os: windows-latest
             compiler: cl
-            cmake-args: -A ARM
+            cmake-args: -A ARM,version=10.0.22621.0
             deploy-name: win-arm
 
           - name: Windows MSVC ARM Compat
             os: windows-latest
             compiler: cl
-            cmake-args: -A ARM -DZLIB_COMPAT=ON
+            cmake-args: -A ARM,version=10.0.22621.0 -DZLIB_COMPAT=ON
             deploy-name: win-arm-compat
 
           - name: Windows MSVC ARM64

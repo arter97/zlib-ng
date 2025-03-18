@@ -10,7 +10,7 @@ jobs:
   cmake:
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
+    timeout-minutes: 80
     strategy:
       fail-fast: false
       matrix:
@@ -151,154 +151,178 @@ jobs:
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armel
+            gcov-exec: arm-linux-gnueabi-gcov
             codecov: ubuntu_gcc_armsf
 
           - name: Ubuntu GCC ARM SF Compat No Opt UBSAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-arm-linux-gnueabi g++-arm-linux-gnueabi libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armel
+            gcov-exec: arm-linux-gnueabi-gcov
             codecov: ubuntu_gcc_armsf_compat_no_opt
 
           - name: Ubuntu GCC ARM HF ASAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armhf
+            gcov-exec: arm-linux-gnueabihf-gcov
             codecov: ubuntu_gcc_armhf
 
           - name: Ubuntu GCC ARM HF No ACLE ASAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_ACLE=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armhf
+            gcov-exec: arm-linux-gnueabihf-gcov
             codecov: ubuntu_gcc_armhf_no_acle
 
           - name: Ubuntu GCC ARM HF No NEON ASAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DWITH_NEON=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armhf
+            gcov-exec: arm-linux-gnueabihf-gcov
             codecov: ubuntu_gcc_armhf_no_neon
 
           - name: Ubuntu GCC ARM HF Compat No Opt UBSAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-armhf.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf libc-dev-armel-cross
+            packages: qemu-user crossbuild-essential-armhf
+            gcov-exec: arm-linux-gnueabihf-gcov
             codecov: ubuntu_gcc_armhf_compat_no_opt
 
           - name: Ubuntu GCC AARCH64 ASAN
-            os: ubuntu-latest
+            os: ubuntu-22.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            gcov-exec: aarch64-linux-gnu-gcov
             codecov: ubuntu_gcc_aarch64
 
           - name: Ubuntu GCC AARCH64 No ACLE UBSAN
-            os: ubuntu-latest
+            os: ubuntu-22.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_ACLE=OFF -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            gcov-exec: aarch64-linux-gnu-gcov
             codecov: ubuntu_gcc_aarch64_no_acle
 
           - name: Ubuntu GCC AARCH64 No NEON UBSAN
-            os: ubuntu-latest
+            os: ubuntu-22.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DWITH_NEON=OFF -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            gcov-exec: aarch64-linux-gnu-gcov
             codecov: ubuntu_gcc_aarch64_no_neon
 
           - name: Ubuntu GCC AARCH64 Compat No Opt UBSAN
-            os: ubuntu-latest
+            os: ubuntu-22.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-aarch64.cmake -DZLIB_COMPAT=ON -DWITH_NEW_STRATEGIES=OFF -DWITH_OPTIM=OFF -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            packages: qemu-user gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc-dev-arm64-cross
+            gcov-exec: aarch64-linux-gnu-gcov
             codecov: ubuntu_gcc_aarch64_compat_no_opt
 
           - name: Ubuntu GCC MIPS
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mips.cmake
-            packages: qemu qemu-user gcc-mips-linux-gnu g++-mips-linux-gnu libc-dev-mips-cross
+            packages: qemu-user crossbuild-essential-mips
+            gcov-exec: mips-linux-gnu-gcov
             codecov: ubuntu_gcc_mips
 
           - name: Ubuntu GCC MIPS64
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mips64.cmake
-            packages: qemu qemu-user gcc-mips64-linux-gnuabi64 g++-mips64-linux-gnuabi64 libc-dev-mips64-cross
+            packages: qemu-user crossbuild-essential-mips64
+            gcov-exec: mips64-linux-gnuabi64-gcov
             codecov: ubuntu_gcc_mips64
 
           - name: Ubuntu GCC PPC
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake
-            packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
+            packages: qemu-user crossbuild-essential-powerpc
+            gcov-exec: powerpc-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc
 
           - name: Ubuntu GCC PPC No Power8
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc.cmake -DWITH_POWER8=OFF
-            packages: qemu qemu-user gcc-powerpc-linux-gnu g++-powerpc-linux-gnu libc-dev-powerpc-cross
+            packages: qemu-user crossbuild-essential-powerpc
+            gcov-exec: powerpc-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc_no_power8
 
           - name: Ubuntu GCC PPC64
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64.cmake
-            packages: qemu qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
+            packages: qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
             ldflags: -static
+            gcov-exec: powerpc64-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc64
 
           - name: Ubuntu GCC PPC64 Power9
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64-power9.cmake
-            packages: qemu qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
+            packages: qemu-user gcc-powerpc64-linux-gnu g++-powerpc64-linux-gnu libc-dev-ppc64-cross
             ldflags: -static
+            gcov-exec: powerpc64-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc64_power9
 
           - name: Ubuntu Clang PPC64 Power9
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64-clang.cmake
-            packages: qemu qemu-user clang binutils-powerpc64-linux-gnu libc-dev-ppc64-cross libgcc-11-dev-ppc64-cross libstdc++-11-dev-ppc64-cross
+            packages: qemu-user clang binutils-powerpc64-linux-gnu libgcc-11-dev-ppc64-cross libc-dev-ppc64-cross libstdc++-11-dev-ppc64-cross
 
           - name: Ubuntu GCC PPC64LE
+            # qemu appears to be broken in newer versions of Ubuntu (see issue 1378)
             os: ubuntu-20.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le.cmake
             packages: qemu qemu-user gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu libc-dev-ppc64el-cross
+            gcov-exec: powerpc64le-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc64le
 
           - name: Ubuntu GCC PPC64LE No VSX
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le-power9.cmake -DWITH_POWER8=OFF -DWITH_POWER9=OFF
-            packages: qemu qemu-user gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu libc-dev-ppc64el-cross
+            packages: qemu-user crossbuild-essential-ppc64el
+            gcov-exec: powerpc64le-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc64le_novsx
 
           - name: Ubuntu GCC PPC64LE Power9
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le-power9.cmake
-            packages: qemu qemu-user gcc-powerpc64le-linux-gnu g++-powerpc64le-linux-gnu libc-dev-ppc64el-cross
+            packages: qemu-user crossbuild-essential-ppc64el
+            gcov-exec: powerpc64le-linux-gnu-gcov
             codecov: ubuntu_gcc_ppc64le_power9
 
           - name: Ubuntu Clang PPC64LE Power9
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-powerpc64le-clang.cmake
-            packages: qemu qemu-user clang binutils-powerpc64le-linux-gnu libc-dev-ppc64el-cross libgcc-11-dev-ppc64el-cross libstdc++-11-dev-ppc64el-cross
+            packages: qemu-user crossbuild-essential-ppc64el
 
           - name: Ubuntu GCC SPARC64
+            # qemu appears to be broken in newer versions of Ubuntu (see issue 1378)
             os: ubuntu-20.04
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-sparc64.cmake
             packages: qemu qemu-user gcc-sparc64-linux-gnu g++-sparc64-linux-gnu libc-dev-sparc64-cross
             ldflags: -static
+            gcov-exec: sparc64-linux-gnu-gcov
             codecov: ubuntu_gcc_sparc64
 
           - name: Ubuntu GCC S390X ASAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu-user crossbuild-essential-s390x
             ldflags: -static
+            gcov-exec: s390x-linux-gnu-gcov
             codecov: ubuntu_gcc_s390x
 
           - name: Ubuntu GCC S390X No vectorized CRC32 ASAN
             os: ubuntu-latest
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DWITH_CRC32_VX=OFF -DWITH_SANITIZER=Address
             asan-options: detect_leaks=0
-            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu-user crossbuild-essential-s390x
             ldflags: -static
+            gcov-exec: s390x-linux-gnu-gcov
             codecov: ubuntu_gcc_s390x_no_crc32
 
           - name: ${{ github.repository == 'zlib-ng/zlib-ng' && 'EL9' || 'Ubuntu' }} GCC S390X DFLTCC ASAN
@@ -308,9 +332,10 @@ jobs:
             cmake-args: >-
               ${{ github.repository != 'zlib-ng/zlib-ng' && '-DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake' || '' }}
               -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Address
-            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
             asan-options: detect_leaks=0
             ldflags: -static
+            gcov-exec: ${{ github.repository == 'zlib-ng/zlib-ng' && 'gcov' || 's390x-linux-gnu-gcov' }}
             codecov: ${{ github.repository == 'zlib-ng/zlib-ng' && 'el9_gcc_s390x_dfltcc' || 'ubuntu_gcc_s390x_dfltcc' }}
             # The dedicated z15 test VM has 4 cores
             parallels-jobs: 4
@@ -322,20 +347,22 @@ jobs:
             cmake-args: >-
               ${{ github.repository != 'zlib-ng/zlib-ng' && '-DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake' || '' }}
               -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON -DWITH_SANITIZER=Undefined
-            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
+            packages: qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
             ldflags: -static
+            gcov-exec: ${{ github.repository == 'zlib-ng/zlib-ng' && 'gcov' || 's390x-linux-gnu-gcov' }}
             codecov: ${{ github.repository == 'zlib-ng/zlib-ng' && 'el9_gcc_s390x_dfltcc' || 'ubuntu_gcc_s390x_dfltcc' }}
             # The dedicated z15 test VM has 4 cores
             parallels-jobs: 4
 
           - name: ${{ github.repository == 'zlib-ng/zlib-ng' && 'EL9' || 'Ubuntu' }} Clang S390X DFLTCC ${{ (github.repository == 'zlib-ng/zlib-ng' && 'MSAN') || 'Compat' }}
             os: ${{ github.repository == 'zlib-ng/zlib-ng' && 'z15' || 'ubuntu-latest' }}
-            compiler: ${{ github.repository == 'zlib-ng/zlib-ng' && 'clang' || 'clang-11' }}
-            cxx-compiler: ${{ github.repository == 'zlib-ng/zlib-ng' && 'clang++' || 'clang++-11' }}
+            compiler: ${{ github.repository == 'zlib-ng/zlib-ng' && 'clang' || 'clang-15' }}
+            cxx-compiler: ${{ github.repository == 'zlib-ng/zlib-ng' && 'clang++' || 'clang++-15' }}
             cmake-args: >-
               ${{ github.repository != 'zlib-ng/zlib-ng' && '-DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-s390x.cmake -DZLIB_COMPAT=ON' || '-GNinja -DWITH_SANITIZER=Memory' }}
               -DWITH_DFLTCC_DEFLATE=ON -DWITH_DFLTCC_INFLATE=ON
-            packages: qemu qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
+            gcov-exec: ${{ github.repository == 'zlib-ng/zlib-ng' && 'gcov' || 's390x-linux-gnu-gcov' }}
+            packages: qemu-user gcc-s390x-linux-gnu g++-s390x-linux-gnu libc-dev-s390x-cross
             # The dedicated z15 test VM has 4 cores
             parallels-jobs: 4
 
@@ -344,6 +371,7 @@ jobs:
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mingw-i686.cmake
             packages: wine wine32 gcc-mingw-w64-i686 g++-mingw-w64-i686 libpcre2-8-0=10.39-3ubuntu0.1 libpcre2-8-0:i386=10.39-3ubuntu0.1 libodbc1=2.3.9-5ubuntu0.1 libodbc1:i386=2.3.9-5ubuntu0.1 libodbc2=2.3.9-5ubuntu0.1 libodbc2:i386=2.3.9-5ubuntu0.1 libodbccr2=2.3.9-5ubuntu0.1 libodbccr2:i386=2.3.9-5ubuntu0.1 libwine:i386=6.0.3~repack-1 libgphoto2-6:i386=2.5.27-1build2 libsane:i386=1.1.1-5 libgd3=2.3.0-2ubuntu2 libgd3:i386=2.3.0-2ubuntu2 libgcc-s1:i386 libstdc++6:i386
             ldflags: -static
+            gcov-exec: i686-w64-mingw32-gcov-posix
             codecov: ubuntu_gcc_mingw_i686
             # Limit parallel test jobs to prevent wine errors
             parallels-jobs: 1
@@ -353,11 +381,12 @@ jobs:
             cmake-args: -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-mingw-x86_64.cmake
             packages: wine wine64 gcc-mingw-w64 g++-mingw-w64
             ldflags: -static
+            gcov-exec: x86_64-w64-mingw32-gcov-posix
             codecov: ubuntu_gcc_mingw_x86_64
              # Limit parallel test jobs to prevent wine errors
             parallels-jobs: 1
 
-          - name: Ubuntu 20.04 Clang
+          - name: Ubuntu 20.04 Clang 6
             os: ubuntu-20.04
             compiler: clang-6.0
             cxx-compiler: clang++-6.0
@@ -365,72 +394,72 @@ jobs:
 
           - name: Ubuntu Clang
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            compiler: clang-15
+            cxx-compiler: clang++-15
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang
 
           # Check for undefined symbols in the version script for the modern api
           - name: Ubuntu Clang Undefined Symbols
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cmake-args: -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--no-undefined-version" -DZLIBNG_ENABLE_TESTS=OFF
             build-shared: ON
-            packages: clang-11 llvm-11 lld
+            packages: clang-15 llvm-15 lld
 
           # Check for undefined symbols in the version script for the compat api
           - name: Ubuntu Clang Undefined Symbols Compat
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cmake-args: -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=lld -Wl,--no-undefined-version" -DZLIBNG_ENABLE_TESTS=OFF -DZLIB_COMPAT=ON
             build-shared: ON
-            packages: clang-11 llvm-11 lld
+            packages: clang-15 llvm-15 lld
 
           - name: Ubuntu Clang Inflate Strict
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cmake-args: -DWITH_INFLATE_STRICT=ON
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_inflate_strict
 
           - name: Ubuntu Clang Inflate Allow Invalid Dist
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cmake-args: -DWITH_INFLATE_ALLOW_INVALID_DIST=ON
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_inflate_allow_invalid_dist
 
           - name: Ubuntu Clang Reduced Memory
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cmake-args: -DWITH_REDUCED_MEM=ON
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_reduced_mem
 
           - name: Ubuntu Clang Memory Map
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
+            compiler: clang-15
+            cxx-compiler: clang++-15
             cflags: -DUSE_MMAP
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_mmap
 
           - name: Ubuntu Clang Debug
             os: ubuntu-latest
-            compiler: clang-11
-            cxx-compiler: clang++-11
-            packages: clang-11 llvm-11 llvm-11-tools
-            gcov-exec: llvm-cov-11 gcov
+            compiler: clang-15
+            cxx-compiler: clang++-15
+            packages: clang-15 llvm-15 llvm-15-tools
+            gcov-exec: llvm-cov-15 gcov
             codecov: ubuntu_clang_debug
             build-config: Debug
 
@@ -439,7 +468,7 @@ jobs:
             compiler: clang-15
             cxx-compiler: clang++-15
             cmake-args: -GNinja -DWITH_SANITIZER=Memory
-            packages:  ninja-build clang-15 llvm-15-tools
+            packages:  ninja-build clang-15 llvm-15-tools libclang-rt-15-dev
             gcov-exec: llvm-cov-15 gcov
             # https://github.com/llvm/llvm-project/issues/55785
             msan-options: use_sigaltstack=0
@@ -650,7 +679,7 @@ jobs:
     - name: Compile LLVM C++ libraries (MSAN)
       if: contains(matrix.name, 'MSAN')
       run: |
-        git clone --depth=1 https://github.com/llvm/llvm-project --single-branch --branch llvmorg-16.0.6
+        git clone --depth=1 https://github.com/llvm/llvm-project --single-branch --branch llvmorg-15.0.7
         cmake -S llvm-project/runtimes -B llvm-project/build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
           -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi" \
@@ -713,8 +742,8 @@ jobs:
       run: |
         python3 -u -m venv ${{ matrix.build-dir || '.' }}/venv
         source ${{ matrix.build-dir || '.' }}/venv/${{ runner.os == 'Windows' && 'Scripts' || 'bin' }}/activate
-        python3 -u -m pip install gcovr==${{ matrix.compiler == 'gcc-13' && '7.2' || '5.0' }}
-        python3 -m gcovr ${{ matrix.build-dir || '' }} -j 3 --verbose \
+        python3 -u -m pip install gcovr
+        python3 -m gcovr ${{ matrix.build-dir || '' }} -j 3 --gcov-ignore-parse-errors --verbose \
           --exclude-unreachable-branches \
           --gcov-executable "${{ matrix.gcov-exec || 'gcov' }}" \
           --root ${{ matrix.build-src-dir || '.' }} \
