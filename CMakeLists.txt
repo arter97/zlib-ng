@@ -100,7 +100,7 @@ option(WITH_OPTIM "Build with optimisation" ON)
 option(WITH_ALL_FALLBACKS "Build all generic fallback functions (Useful for Gbench)" OFF)
 option(WITH_REDUCED_MEM "Reduced memory usage for special cases (reduces performance)" OFF)
 option(WITH_NEW_STRATEGIES "Use new strategies" ON)
-option(WITH_CRC32_CHORBA "Enable optimized CRC32 algorithm Chorba" ON)
+option(WITH_CRC32_CHORBA "Enable optimized CRC32 algorithm Chorba" OFF)
 option(WITH_NATIVE_INSTRUCTIONS
     "Instruct the compiler to use the full instruction set on this host (gcc/clang -march=native)" OFF)
 option(WITH_RUNTIME_CPU_DETECTION "Build with runtime detection of CPU architecture" ON)
