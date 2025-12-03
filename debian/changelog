@@ -1,3 +1,9 @@
+zlib (1:1.3.99+ng2.3.2-0arter97) UNRELEASED; urgency=medium
+
+  * zlib-ng 2.3.2
+
+ -- Juhyung Park <qkrwngud825@gmail.com>  Thu, 04 Dec 2025 00:24:00 -0700
+
 zlib (1:1.3.99+ng2.3.1-0arter97) UNRELEASED; urgency=medium
 
   * zlib-ng 2.3.1
